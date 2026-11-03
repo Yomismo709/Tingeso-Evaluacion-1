@@ -1,0 +1,29 @@
+{
+  "realm": "siga-ipt",
+  "enabled": true,
+  "sslRequired": "none",
+  "registrationAllowed": false,
+  "roles": {
+    "realm": [
+      { "name": "ADMIN" },
+      { "name": "TEACHER" },
+      { "name": "STUDENT" }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "siga-ipt-frontend",
+      "name": "SIGA IPT Frontend",
+      "enabled": true,
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "implicitFlowEnabled": false,
+      "redirectUris": ["http://localhost:5173/*"],
+      "webOrigins": ["http://localhost:5173"],
+      "attributes": {
+        "pkce.code.challenge.method": "S256"
+      }
+    }
+  ]
+}
