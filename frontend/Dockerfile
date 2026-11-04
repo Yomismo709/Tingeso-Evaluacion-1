@@ -6,9 +6,10 @@ RUN npm install
 COPY . .
 RUN npm run build
 
+
 # Etapa 2: Servidor Web Ligero
 FROM nginx:alpine
-# Vite por defecto compila en la carpeta /dist
 COPY --from=builder /app/dist /usr/share/nginx/html
+COPY nginx-frontend.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]

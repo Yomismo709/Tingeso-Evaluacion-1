@@ -21,12 +21,16 @@ services:
       KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN_USERNAME:-admin}
       KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:?Set KEYCLOAK_ADMIN_PASSWORD in .env}
       KC_HEALTH_ENABLED: "true"
-      KC_HOSTNAME: http://localhost:8081
-    ports:
-      - "8081:8080"
+      # KC_HOSTNAME: http://localhost:8081
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/siga_ipt
+      KC_DB_USERNAME: ${DB_USER:-postgres}
+      KC_DB_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
+      # Nuevas variables para Nginx y sub-rutas
+      KC_HTTP_RELATIVE_PATH: /auth
+      KC_PROXY_HEADERS: xforwarded
     volumes:
       - ./keycloak/realm-siga-ipt.json:/opt/keycloak/data/import/realm-siga-ipt.json:ro
-      - keycloak_data:/opt/keycloak/data/h2
 
   backend:
     # Esta imagen será descargada de Docker Hub tras el GitHub Action
@@ -39,7 +43,10 @@ services:
       SPRING_DATASOURCE_USERNAME: ${DB_USER:-postgres}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
       # Apunta al Keycloak interno de la red Docker
-      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://keycloak:8080/realms/siga-ipt
+      #SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://keycloak:8080/realms/siga-ipt
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://localhost/auth/realms/siga-ipt
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: http://keycloak:8080/auth/realms/siga-ipt/protocol/openid-connect/certs
+      APP_CORS_ALLOWED_ORIGINS: "http://localhost,http://localhost:80"
     depends_on:
       - postgres
       - keycloak
@@ -56,15 +63,19 @@ services:
       - backend
 
   frontend:
+    # Instrucción necesaria para que --build funcione
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
     # Esta imagen será descargada de Docker Hub tras el GitHub Action
     image: ${DOCKER_USERNAME}/siga-ipt-frontend:latest
     container_name: siga-ipt-frontend
     restart: unless-stopped
     ports:
       - "80:80" # Expone el frontend en el puerto principal
-    environment:
-      VITE_API_URL: http://localhost:8080/api # El frontend llamará al backend a través de Nginx
+    depends_on:
+      - nginx
+      - keycloak
 
 volumes:
   postgres_data:
-  keycloak_data:
