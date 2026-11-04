@@ -44,9 +44,9 @@ services:
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
       # Apunta al Keycloak interno de la red Docker
       #SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://keycloak:8080/realms/siga-ipt
-      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://localhost/auth/realms/siga-ipt
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: https://tingesosigaipt.duckdns.org/auth/realms/siga-ipt
       SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: http://keycloak:8080/auth/realms/siga-ipt/protocol/openid-connect/certs
-      APP_CORS_ALLOWED_ORIGINS: "http://localhost,http://localhost:80"
+      APP_CORS_ALLOWED_ORIGINS: "http://localhost,http://localhost:80,https://tingesosigaipt.duckdns.org"
     depends_on:
       - postgres
       - keycloak
