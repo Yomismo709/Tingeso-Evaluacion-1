@@ -6,6 +6,8 @@ import MatriculationPanel from './components/MatriculationPanel';
 import EnrollmentPanel from './components/EnrollmentPanel';
 import StudentSchedulePanel from './components/StudentSchedulePanel';
 import TeacherPanel from './components/TeacherPanel';
+import DataSetupPanel from './components/DataSetupPanel';
+import StudentCurriculum from './components/StudentCurriculum';
 
 function App() {
   const handleLogout = () => {
@@ -19,24 +21,26 @@ function App() {
   return (
     <Router>
       <div className="min-h-screen bg-gray-100 flex">
-        
+
         <aside className="w-64 bg-gray-800 text-white flex flex-col">
           <div className="p-4 bg-blue-700 font-bold text-lg text-center shadow-md">
             SIGA IPT
           </div>
           <nav className="flex-1 p-4 space-y-2">
             <Link to="/" className="block py-2 px-4 rounded hover:bg-gray-700 transition">Inicio</Link>
-            
+
             {hasRole('STUDENT') && (
               <>
                 <Link to="/mi-perfil" className="block py-2 px-4 rounded hover:bg-gray-700 transition">Mi Perfil</Link>
-                <Link to="/estudiante/inscripcion" className="block py-2 px-4 rounded hover:bg-gray-700 transition">Inscripción (Épica 6)</Link>
+                <Link to="/estudiante/inscripcion" className="block py-2 px-4 rounded hover:bg-gray-700 transition">Inscripción Asignaturas</Link>
                 <Link to="/estudiante/mi-horario" className="block py-2 px-4 rounded hover:bg-gray-700 transition">Mi Carga Académica</Link>
+                <Link to="/estudiante/malla" className="block py-2 px-4 rounded hover:bg-gray-700 transition">Mi Malla Curricular</Link>
               </>
             )}
 
             {hasRole('ADMIN') && (
               <>
+                <Link to="/admin/registros" className="block py-2 px-4 rounded hover:bg-gray-700 transition">Registros Base</Link>
                 <Link to="/admin/periodos" className="block py-2 px-4 rounded hover:bg-gray-700 transition">Gestión Académica</Link>
                 <Link to="/admin/matricula" className="block py-2 px-4 rounded hover:bg-gray-700 transition">Matricular Estudiante</Link>
               </>
@@ -57,8 +61,8 @@ function App() {
               <span className="text-sm font-medium text-gray-600">
                 Usuario: {keycloak.tokenParsed?.preferred_username}
               </span>
-              <button 
-                onClick={handleLogout} 
+              <button
+                onClick={handleLogout}
                 className="bg-red-500 text-white px-4 py-2 rounded text-sm font-bold hover:bg-red-600 transition"
               >
                 Cerrar Sesión
@@ -80,6 +84,8 @@ function App() {
               <Route path="/estudiante/inscripcion" element={<EnrollmentPanel />} />
               <Route path="/estudiante/mi-horario" element={<StudentSchedulePanel />} />
               <Route path="/profesor/calificaciones" element={<TeacherPanel />} />
+              <Route path="/admin/registros" element={<DataSetupPanel />} />
+              <Route path="/estudiante/malla" element={<StudentCurriculum />} />
             </Routes>
           </main>
         </div>

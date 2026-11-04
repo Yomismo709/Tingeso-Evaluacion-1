@@ -26,6 +26,7 @@ services:
       - "8081:8080"
     volumes:
       - ./keycloak/realm-siga-ipt.json:/opt/keycloak/data/import/realm-siga-ipt.json:ro
+      - keycloak_data:/opt/keycloak/data/h2
 
   backend:
     # Esta imagen será descargada de Docker Hub tras el GitHub Action
@@ -66,3 +67,4 @@ services:
 
 volumes:
   postgres_data:
+  keycloak_data:
